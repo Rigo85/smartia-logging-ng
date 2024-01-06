@@ -1,0 +1,27 @@
+
+.log-line {
+    font-size: 14px;
+    font-family: 'Source Code Pro', monospace;
+    line-height: 16px;
+    padding-left: 15px;
+    text-indent: -15px;
+    word-wrap: break-word;
+}
+
+.log-line-item {
+    margin-right: 8px;
+    /*display: inline-block;*/
+}
+
+.log-line-a {
+    color: #abb9ff;
+}
+
+#logs-container {
+    padding-top: 100px;
+    overflow: auto;
+}
+
+#logs-container > div.log-line:last-of-type {
+    margin-bottom: 65px;
+}

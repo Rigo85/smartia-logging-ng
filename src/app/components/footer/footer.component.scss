@@ -1,0 +1,82 @@
+.footer {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	z-index: 1000;
+	padding: 10px;
+	background-color: #343a40; /* Fondo oscuro para el footer */
+	color: #f8f9fa; /* Color de texto claro */
+}
+
+.footer .dropdown {
+	max-width: 150px; /* Ancho máximo para los dropdowns */
+}
+
+.footer input {
+	flex-grow: 1;
+}
+
+.play-pause-btn {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-width: 40px;
+	height: 40px;
+}
+
+.footer .form-select {
+	background-color: #343a40; /* Color de fondo oscuro */
+	color: #f8f9fa; /* Color del texto claro */
+	border-color: #6c757d; /* Color del borde */
+}
+
+.footer .form-control {
+	background-color: #343a40; /* Color de fondo oscuro */
+	color: #f8f9fa; /* Color del texto claro */
+	border-color: #6c757d; /* Color del borde */
+}
+
+.footer .form-select,
+.footer .form-control,
+.footer .btn {
+	height: 40px; /* Altura fija para todos los elementos */
+}
+
+.footer > select {
+	width: 20%;
+}
+
+.footer > div {
+	width: 20%;
+}
+
+#filter-input {
+	background-color: #0f0f10;
+	border-color: #333;
+	box-shadow: none;
+	text-align: left;
+	line-height: 13px;
+	font-family: Open Sans, Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	border-radius: 2px;
+}
+
+#hostnames-select {
+	border-color: #333;
+	line-height: 13px;
+	font-family: Open Sans, Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	border-radius: 2px;
+	box-shadow: none;
+	max-width: 259px;
+}
+
+.btn.btn-secondary {
+	border-radius: 2px;
+	background-color: #333;
+	border-color: #333;
+}
+

@@ -1,0 +1,43 @@
+<ng-template #popContent>
+	<div class="d-flex align-items-center">
+		<div class="position-relative">
+			<input
+				class="form-control form-control-sm custom-filter-input"
+				type="text"
+				autocomplete="off"
+				placeholder=""
+				name="search"
+				[(ngModel)]="query"
+				(keydown.enter)="onNewQuerySearch(customFilterInput.value)"
+				#customFilterInput
+				id="custom-filter-input"
+			/>
+			{{ customFilterInput.focus() }}
+			<fa-icon [icon]="farClock" class="position-absolute"
+					 style="top: 50%; left: 10px; transform: translateY(-50%);"></fa-icon>
+		</div>
+		<button class="btn btn-primary" id="custom-filter-button" (click)="onNewQuerySearch(customFilterInput.value)">
+			Seek To
+		</button>
+	</div>
+	<div class="note">
+		<em>Examples:</em>
+		7:02 am<em>,</em>
+		yesterday at 5:00<em>,</em>
+		jan 5 2:35pm
+	</div>
+</ng-template>
+
+<ng-template #popTitle>Seek to date or time</ng-template>
+
+<button type="button" class="btn btn-secondary clock-btn"
+		[ngbPopover]="popContent"
+		[popoverTitle]="popTitle"
+		[autoClose]="'outside'"
+		triggers="manual"
+		#p1="ngbPopover"
+		(hidden)="onNewQuerySearch(query)"
+		(shown)="onShown()"
+		(click)="toggleDateFilter(p1)">
+	<fa-icon [icon]="faClock"></fa-icon>
+</button>
