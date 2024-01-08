@@ -1,7 +1,7 @@
 import {
 	Component,
 	EventEmitter,
-	Output,
+	Output, ViewChild,
 	ViewEncapsulation
 } from "@angular/core";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
@@ -28,6 +28,7 @@ export class DateFilterPopoverComponent {
 	farClock = farClock;
 	query: string = "";
 	oldQuery: string = "";
+	@ViewChild("p1") popOver!: NgbPopover;
 
 	toggleDateFilter(popover: NgbPopover) {
 		if (popover.isOpen()) {
@@ -38,14 +39,24 @@ export class DateFilterPopoverComponent {
 	}
 
 	onNewQuerySearch(query: string): void {
-		const _query = query?.trim();
-		if (_query && _query !== this.oldQuery) {
-			this.newQueryEvent.emit(_query);
+		if ((query?.trim() ?? "") !== this.oldQuery) {
+			this.oldQuery = query?.trim() ?? "";
+			this.newQueryEvent.emit(this.oldQuery);
 		}
 	}
 
+	onKeyDown(): void {
+		this.onNewQuerySearch(this.query);
+		if (this.popOver) {
+			this.popOver.close();
+		}
+	}
+
+	onClick(): void {
+		this.onKeyDown();
+	}
+
 	onShown(): void {
-		this.oldQuery = this.query?.trim();
 		this.query = this.query?.trim();
 	}
 }

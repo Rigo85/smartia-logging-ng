@@ -1,13 +1,25 @@
 <footer class="footer bg-dark">
-	<select class="form-control form-control-sm" id="hostnames-select" [(ngModel)]="logFilter.hostnameFilter">
+	<select
+		class="form-control form-control-sm"
+		id="hostnames-select"
+		[(ngModel)]="loggingService.logFilter.hostnameFilter">
 		<option>All Hostnames</option>
 	</select>
-	<input class="form-control form-control-sm" [(ngModel)]="logFilter.inputFilter" (keydown.enter)="onKeydown()"
-		   id="filter-input" type="text"/>
-	<app-date-filter-popover (newQueryEvent)="onDateFilter($event)"></app-date-filter-popover>
+	<input
+		class="form-control form-control-sm"
+		[(ngModel)]="inputFilter"
+		(keydown.enter)="onInputFilter()"
+		id="filter-input"
+		type="text"/>
+	<app-date-filter-popover
+		(newQueryEvent)="onDateFilter($event)">
+	</app-date-filter-popover>
 	<div></div>
-	<button class="btn btn-secondary play-pause-btn" (click)="onStartStop()" id="start-stop-btn">
-		<fa-icon [icon]="isStreaming ? faPause : faPlay"></fa-icon>
+	<button
+		class="btn btn-secondary play-pause-btn"
+		(click)="loggingService.isStreaming = !loggingService.isStreaming"
+		id="start-stop-btn">
+		<fa-icon [icon]="loggingService.isStreaming ? faPause : faPlay"></fa-icon>
 	</button>
 </footer>
 

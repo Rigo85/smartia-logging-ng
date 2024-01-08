@@ -8,15 +8,18 @@
 				placeholder=""
 				name="search"
 				[(ngModel)]="query"
-				(keydown.enter)="onNewQuerySearch(customFilterInput.value)"
+				(keydown.enter)="onKeyDown()"
 				#customFilterInput
 				id="custom-filter-input"
 			/>
 			{{ customFilterInput.focus() }}
-			<fa-icon [icon]="farClock" class="position-absolute"
-					 style="top: 50%; left: 10px; transform: translateY(-50%);"></fa-icon>
+			<fa-icon
+				[icon]="farClock"
+				class="position-absolute"
+				style="top: 50%; left: 10px; transform: translateY(-50%);">
+			</fa-icon>
 		</div>
-		<button class="btn btn-primary" id="custom-filter-button" (click)="onNewQuerySearch(customFilterInput.value)">
+		<button class="btn btn-primary" id="custom-filter-button" (click)="onClick()">
 			Seek To
 		</button>
 	</div>

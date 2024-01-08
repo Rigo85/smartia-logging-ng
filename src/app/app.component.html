@@ -1,3 +1,3 @@
 <app-nav></app-nav>
-<app-logs-container></app-logs-container>
+<app-logs-container *ngIf="logs$ | async as logs" [logs]="logs"></app-logs-container>
 <app-footer></app-footer>
