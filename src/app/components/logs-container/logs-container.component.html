@@ -3,7 +3,7 @@
 		<div class="log-line">
 			<!-- Elemento de tiempo -->
 			<time class="log-line-item" [attr.datetime]="log.dateTime">
-				{{ formatDate(log.dateTime) }}
+				{{ log.dateTime | formatDate }}
 			</time>
 
 			<!-- Elemento de hostname -->
