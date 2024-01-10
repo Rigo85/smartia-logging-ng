@@ -32,7 +32,7 @@ export class LoggingService {
 	public logFilter: LogFilter = {};
 
 	constructor(private dateRecognition: DateRecognition) {
-		this.webSocket = new WebSocketSubject<IncomingMessage>("ws://localhost:3005");
+		this.webSocket = new WebSocketSubject<IncomingMessage>("ws://smartia-logging-ui-backend");
 
 		this.webSocket
 			.pipe(
