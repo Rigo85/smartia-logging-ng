@@ -11,7 +11,7 @@
 		"build:stats": "ng build --stats-json",
 		"analyze": "webpack-bundle-analyzer dist/smartia-logging-ng/stats.json",
 		"serve:ssr:smartia-logging-ng": "node dist/smartia-logging-ng/server/server.mjs",
-		"postinstall": "npm install -g @angular/cli @angular/compiler-cli typescript && npm run build "
+		"postinstall": "npm run build"
 	},
 	"engines": {
 		"node": "18.x",
