@@ -29,12 +29,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 	public logs$!: Observable<MessageLog[]>;
 	loading = false;
 	isBottom = true;
+	public hostnames: string[] = ["All Hostnames"];
 
 	constructor(private loggingService: LoggingService) {
 		this.loggingService.onFilterLogs();
 
 		this.checkScrollInterval = setInterval(() => {
-			// console.info(`isAtBottom: ${this.isAtBottom()} loading: ${this.loading}`);
 			if (this.isAtBottom() && !this.loading) {
 				this.loading = true;
 				this.loggingService.onFilterLogs();
@@ -45,7 +45,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 	private isAtBottom(): boolean {
 		if (this.container) {
 			const element = this.container.nativeElement;
-			// console.info(`element.scrollTop:${element.scrollTop} + element.clientHeight:${element.clientHeight} >= element.scrollHeight:${element.scrollHeight}, ${element.scrollTop + element.clientHeight + 1}`);
 			return element.scrollTop + element.clientHeight + 1 >= element.scrollHeight;
 		}
 		return false;
@@ -74,6 +73,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 			}),
 			startWith([])
 		);
+
+		this.logs$.subscribe((logs: MessageLog[]) => {
+			const _hostnames = new Set(logs.map((log: MessageLog) => log.hostname));
+			this.hostnames = ["All Hostnames", ...Array.from(_hostnames)];
+		});
 	}
 
 	onScroll(event: any): void {

@@ -3,7 +3,9 @@
 		class="form-control form-control-sm"
 		id="hostnames-select"
 		[(ngModel)]="loggingService.logFilter.hostnameFilter">
-		<option>All Hostnames</option>
+		@for(item of hostnames; track item) {
+			<option>{{item}}</option>
+		}
 	</select>
 	<input
 		class="form-control form-control-sm"

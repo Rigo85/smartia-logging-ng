@@ -28,7 +28,7 @@ export class DateRecognition {
 
 	public dateRecognition(query: string): DateFilter | undefined {
 		const results = Recognizers.recognizeDateTime(query, Recognizers.Culture.English);
-		console.info(JSON.stringify(results));
+		// console.info(JSON.stringify(results));
 
 		const mapper: Record<string, DateTimeResolver | DateTimeRangeResolver> = {
 			"datetimeV2.date": this.resolveDateTime,

@@ -25,8 +25,6 @@ export class LoggingService {
 	private incomingMessages: Subject<IncomingMessage> = new Subject<IncomingMessage>();
 	public incomingMessage$: Observable<IncomingMessage> = this.incomingMessages.asObservable();
 
-	private _isRequestPending = false;
-	private _isHostnameRequestPending = false;
 	private _isStreaming = true;
 
 	public logFilter: LogFilter = {};
@@ -34,7 +32,6 @@ export class LoggingService {
 	constructor(private dateRecognition: DateRecognition) {
 		this.webSocket = new WebSocketSubject<IncomingMessage>("ws://localhost:3005");
 
-		// todo ver si es necesario almacenar la suscripción.
 		this.webSocket
 			.pipe(
 				catchError(err => {
@@ -45,37 +42,14 @@ export class LoggingService {
 				takeUntilDestroyed()
 			)
 			.subscribe({
-				// todo se podría guardar los ids de los logs y usarlos luego para enviar al backend para filtrar.
 				next: (msg: IncomingMessage) => this.incomingMessages.next(msg),
 				error: err => console.error(err),
 				complete: () => console.log("Closed connection")
 			});
-
-		// this.sendMessage({event: "update", data: this.logFilter});
-		// let secInterval = 10;
-		// interval(secInterval * 1000).subscribe(() => {
-		// 	if (this.isStreaming) {
-		// 		this.sendMessage({event: "update", data: this.logFilter});
-		// 	}
-		// });
-
-		// todo agregar peticiones para los hostnames.
 	}
 
 	private sendMessage(msg: MessageFilter): void {
 		this.webSocket.next(msg);
-	}
-
-	closeWebSocket(): void {
-		this.webSocket.complete();
-	}
-
-	public set isRequestPending(isRequestPending: boolean) {
-		this._isRequestPending = isRequestPending;
-	}
-
-	public set isHostnameRequestPending(isHostnameRequestPending: boolean) {
-		this._isHostnameRequestPending = isHostnameRequestPending;
 	}
 
 	public set isStreaming(isStreaming: boolean) {
@@ -86,9 +60,10 @@ export class LoggingService {
 		return this._isStreaming;
 	}
 
-	public onFilterLogs(): void {
+	public onFilterLogs(force: boolean = false): void {
 		console.log(`-----------------> onFilterLogs: '${JSON.stringify(this.logFilter)}'`);
-		if (this.isStreaming) {
+		if (this.isStreaming || force) {
+			// todo enviar un identificador y esperar por la respuesta con el mismo.
 			this.sendMessage({event: "update", data: this.logFilter});
 		}
 	}
@@ -96,13 +71,13 @@ export class LoggingService {
 	public onInputFilter(query: string): void {
 		this.logFilter.inputFilter = query;
 
-		this.onFilterLogs();
+		this.onFilterLogs(true);
 	}
 
 	public onDateQueryFilter(query: string): void {
 		this.logFilter.queryString = query;
 		this.logFilter.dateFilter = this.dateRecognition.dateRecognition(query);
 
-		this.onFilterLogs();
+		this.onFilterLogs(true);
 	}
 }

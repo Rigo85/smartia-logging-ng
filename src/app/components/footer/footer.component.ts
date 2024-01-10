@@ -31,6 +31,7 @@ export class FooterComponent implements OnInit {
 	private oldDateQueryFilter = "";
 	@Input() isAtBottom!: boolean;
 	@Output() newAdjustScrollEvent = new EventEmitter<boolean>;
+	@Input() hostnames!: string[];
 
 	constructor(public loggingService: LoggingService) { }
 
