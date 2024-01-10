@@ -3,11 +3,10 @@ import { FormsModule } from "@angular/forms";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { faPause, faPlay, IconDefinition, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { NgbPopoverModule } from "@ng-bootstrap/ng-bootstrap";
-import { Observable } from "rxjs";
 
 import { LoggingService } from "(src)/app/services/logging.service";
-
 import { DateFilterPopoverComponent } from "(src)/app/components/date-filter-popover/date-filter-popover.component";
+import { AsyncPipe } from "@angular/common";
 
 @Component({
 	selector: "app-footer",
@@ -16,27 +15,29 @@ import { DateFilterPopoverComponent } from "(src)/app/components/date-filter-pop
 		FontAwesomeModule,
 		FormsModule,
 		NgbPopoverModule,
-		DateFilterPopoverComponent
+		DateFilterPopoverComponent,
+		AsyncPipe
 	],
 	templateUrl: "./footer.component.html",
 	styleUrl: "./footer.component.scss",
 	providers: []
 })
 export class FooterComponent implements OnInit {
-	faPause = faPause;
-	faPlay = faPlay;
-	faChevronDown = faChevronDown;
-	inputFilter = "";
+	@Input() inputFilter = "";
 	private oldInputFilter = "";
 	private oldDateQueryFilter = "";
 	@Input() isAtBottom!: boolean;
 	@Output() newAdjustScrollEvent = new EventEmitter<boolean>;
+	@Output() newHostnameEvent = new EventEmitter<string>;
+	@Output() newQueryEvent = new EventEmitter<string>;
+	@Output() newDateQueryEvent = new EventEmitter<string>;
+	@Input() hostnameFilter: string = "All Hostnames";
 	@Input() hostnames!: string[];
 
 	constructor(public loggingService: LoggingService) { }
 
 	ngOnInit(): void {
-		this.loggingService.logFilter.hostnameFilter = "All Hostnames";
+		this.hostnameFilter = "All Hostnames";
 	}
 
 	onInputFilter() {
@@ -44,6 +45,8 @@ export class FooterComponent implements OnInit {
 			this.oldInputFilter = this.inputFilter?.trim() ?? "";
 			this.loggingService.onInputFilter(this.oldInputFilter);
 		}
+
+		this.newQueryEvent.emit(this.inputFilter);
 	}
 
 	onDateFilter(query: string) {
@@ -51,6 +54,8 @@ export class FooterComponent implements OnInit {
 			this.oldDateQueryFilter = query?.trim() ?? "";
 			this.loggingService.onDateQueryFilter(this.oldDateQueryFilter);
 		}
+
+		this.newDateQueryEvent.emit(query);
 	}
 
 	onStartStopEvent() {
@@ -66,5 +71,10 @@ export class FooterComponent implements OnInit {
 		if (!this.isAtBottom) return faChevronDown;
 
 		return this.loggingService.isStreaming ? faPause : faPlay;
+	}
+
+	onHostnameChangeEvent(hostname: string) {
+		this.newHostnameEvent.emit(hostname);
+		this.loggingService.onHostnameFilter(hostname?.trim() || "");
 	}
 }

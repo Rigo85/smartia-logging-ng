@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { WebSocketSubject } from "rxjs/webSocket";
-import { catchError, interval, Observable, retry, Subject, throwError } from "rxjs";
+import { catchError, Observable, retry, Subject, throwError } from "rxjs";
 
 import { LogFilter } from "(src)/app/core/log-filter";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -23,7 +23,9 @@ export class LoggingService {
 	private webSocket!: WebSocketSubject<IncomingMessage>;
 
 	private incomingMessages: Subject<IncomingMessage> = new Subject<IncomingMessage>();
+	private incomingHostnames: Subject<IncomingMessage> = new Subject<IncomingMessage>();
 	public incomingMessage$: Observable<IncomingMessage> = this.incomingMessages.asObservable();
+	public incomingHostnames$: Observable<IncomingMessage> = this.incomingHostnames.asObservable();
 
 	private _isStreaming = true;
 
@@ -42,7 +44,13 @@ export class LoggingService {
 				takeUntilDestroyed()
 			)
 			.subscribe({
-				next: (msg: IncomingMessage) => this.incomingMessages.next(msg),
+				next: (msg: IncomingMessage) => {
+					if (msg.event === "hostnames") {
+						// this.incomingHostnames.next(msg);
+					} else {
+						this.incomingMessages.next(msg);
+					}
+				},
 				error: err => console.error(err),
 				complete: () => console.log("Closed connection")
 			});
@@ -77,6 +85,12 @@ export class LoggingService {
 	public onDateQueryFilter(query: string): void {
 		this.logFilter.queryString = query;
 		this.logFilter.dateFilter = this.dateRecognition.dateRecognition(query);
+
+		this.onFilterLogs(true);
+	}
+
+	onHostnameFilter(hostname: string) {
+		this.logFilter.hostnameFilter = hostname;
 
 		this.onFilterLogs(true);
 	}

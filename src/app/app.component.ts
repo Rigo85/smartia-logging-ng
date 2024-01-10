@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { RouterOutlet } from "@angular/router";
-import { map, Observable, startWith, tap, of, BehaviorSubject } from "rxjs";
+import { AsyncPipe, CommonModule } from "@angular/common";
+import { ActivatedRoute, Router, RouterOutlet } from "@angular/router";
+import { map, Observable, startWith, tap } from "rxjs";
 
 import { NavComponent } from "(src)/app/components/nav/nav.component";
 import { FooterComponent } from "(src)/app/components/footer/footer.component";
@@ -17,7 +17,8 @@ import { LoggingService } from "(src)/app/services/logging.service";
 		RouterOutlet,
 		NavComponent,
 		FooterComponent,
-		LogsContainerComponent
+		LogsContainerComponent,
+		AsyncPipe
 	],
 	templateUrl: "./app.component.html",
 	styleUrl: "./app.component.scss"
@@ -30,8 +31,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 	loading = false;
 	isBottom = true;
 	public hostnames: string[] = ["All Hostnames"];
+	public paramHostname: string = "";
+	public paramQuery: string = "";
+	public paramDateQuery: string = "";
 
-	constructor(private loggingService: LoggingService) {
+	constructor(private loggingService: LoggingService, private route: ActivatedRoute, private router: Router) {
 		this.loggingService.onFilterLogs();
 
 		this.checkScrollInterval = setInterval(() => {
@@ -65,6 +69,16 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	ngOnInit(): void {
+		this.route.queryParams.subscribe(params => {
+			this.paramHostname = params["hostname"]?.trim() || "";
+			this.paramQuery = params["query"]?.trim() || "";
+			this.paramDateQuery = params["when"]?.trim() || "";
+
+			this.loggingService.logFilter.hostnameFilter = this.paramHostname;
+			this.loggingService.logFilter.inputFilter = this.paramQuery;
+			this.loggingService.logFilter.queryString = this.paramDateQuery;
+		});
+
 		this.logs$ = this.loggingService.incomingMessage$.pipe(
 			map((msg) => msg.data["logs"] || []),
 			tap((logs) => {
@@ -89,5 +103,36 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.container.nativeElement.addEventListener("scroll", (event: any) => {
 			this.onScroll(event);
 		});
+	}
+
+	onNewHostnameEvent(hostname: string) {
+		this.changeURL(hostname, undefined, undefined);
+	}
+
+	private changeURL(hostname: string | undefined, query: string | undefined, dateQuery: string | undefined) {
+		const queryParams: Record<string, string> = {};
+
+		const _hostname = hostname?.trim() ?? this.paramHostname;
+		const _query = query?.trim() ?? this.paramQuery;
+		const _when = dateQuery?.trim() ?? this.paramDateQuery;
+		if (_hostname) {
+			queryParams["hostname"] = _hostname;
+		}
+		if (_query) {
+			queryParams["query"] = _query;
+		}
+		if (_when) {
+			queryParams["when"] = _when;
+		}
+
+		this.router.navigate(["/"], {queryParams});
+	}
+
+	onNewQueryEvent(query: string) {
+		this.changeURL(undefined, query, undefined);
+	}
+
+	onNewDateQueryEvent(dateQuery: string) {
+		this.changeURL(undefined, undefined, dateQuery);
 	}
 }

@@ -2,7 +2,8 @@
 	<select
 		class="form-control form-control-sm"
 		id="hostnames-select"
-		[(ngModel)]="loggingService.logFilter.hostnameFilter">
+		[(ngModel)]="hostnameFilter"
+		(ngModelChange)="onHostnameChangeEvent($event)">
 		@for(item of hostnames; track item) {
 			<option>{{item}}</option>
 		}

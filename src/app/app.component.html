@@ -1,5 +1,14 @@
 <div #container style="overflow-y: scroll; height: 100vh">
 	<app-nav></app-nav>
 	<app-logs-container *ngIf="logs$ | async as logs" [logs]="logs"></app-logs-container>
-	<app-footer [hostnames]="hostnames" [isAtBottom]="isBottom" (newAdjustScrollEvent)="adjustScroll($event)"></app-footer>
+	<app-footer
+		(newDateQueryEvent)="onNewDateQueryEvent($event)"
+		(newQueryEvent)="onNewQueryEvent($event)"
+		(newHostnameEvent)="onNewHostnameEvent($event)"
+		[hostnames]="hostnames"
+		[isAtBottom]="isBottom"
+		(newAdjustScrollEvent)="adjustScroll($event)"
+		[inputFilter]="paramQuery"
+		[hostnameFilter]="paramHostname">
+	</app-footer>
 </div>
