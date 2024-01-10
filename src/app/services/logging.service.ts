@@ -51,13 +51,13 @@ export class LoggingService {
 				complete: () => console.log("Closed connection")
 			});
 
-		this.sendMessage({event: "update", data: this.logFilter});
-		let secInterval = 10;
-		interval(secInterval * 1000).subscribe(() => {
-			if (this.isStreaming) {
-				this.sendMessage({event: "update", data: this.logFilter});
-			}
-		});
+		// this.sendMessage({event: "update", data: this.logFilter});
+		// let secInterval = 10;
+		// interval(secInterval * 1000).subscribe(() => {
+		// 	if (this.isStreaming) {
+		// 		this.sendMessage({event: "update", data: this.logFilter});
+		// 	}
+		// });
 
 		// todo agregar peticiones para los hostnames.
 	}
@@ -87,7 +87,10 @@ export class LoggingService {
 	}
 
 	public onFilterLogs(): void {
-		console.log(`-----------------> changing filter! '${JSON.stringify(this.logFilter)}'`);
+		console.log(`-----------------> onFilterLogs: '${JSON.stringify(this.logFilter)}'`);
+		if (this.isStreaming) {
+			this.sendMessage({event: "update", data: this.logFilter});
+		}
 	}
 
 	public onInputFilter(query: string): void {

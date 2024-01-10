@@ -17,9 +17,9 @@
 	<div></div>
 	<button
 		class="btn btn-secondary play-pause-btn"
-		(click)="loggingService.isStreaming = !loggingService.isStreaming"
+		(click)="onStartStopEvent()"
 		id="start-stop-btn">
-		<fa-icon [icon]="loggingService.isStreaming ? faPause : faPlay"></fa-icon>
+		<fa-icon [icon]="getIcon()"></fa-icon>
 	</button>
 </footer>
 

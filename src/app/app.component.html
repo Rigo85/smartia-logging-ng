@@ -1,3 +1,5 @@
-<app-nav></app-nav>
-<app-logs-container *ngIf="logs$ | async as logs" [logs]="logs"></app-logs-container>
-<app-footer></app-footer>
+<div #container style="overflow-y: scroll; height: 100vh">
+	<app-nav></app-nav>
+	<app-logs-container *ngIf="logs$ | async as logs" [logs]="logs"></app-logs-container>
+	<app-footer [isAtBottom]="isBottom" (newAdjustScrollEvent)="adjustScroll($event)"></app-footer>
+</div>

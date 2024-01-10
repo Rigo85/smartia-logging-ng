@@ -1,4 +1,7 @@
-import { Component, Input } from "@angular/core";
+import {
+	Component,
+	Input
+} from "@angular/core";
 
 import { FormatDatePipe } from "(src)/app/pipes/format-date.pipe";
 import { MessageLog } from "(src)/app/core/mesage-log";
@@ -11,6 +14,6 @@ import { MessageLog } from "(src)/app/core/mesage-log";
 	styleUrl: "./logs-container.component.scss"
 })
 export class LogsContainerComponent {
-	@Input() logs: MessageLog[] = [];
+	@Input() logs!: MessageLog[];
 
 }
