@@ -8,6 +8,8 @@
 		"build": "ng build --configuration production",
 		"watch": "ng build --watch --configuration development",
 		"test": "ng test",
+		"build:stats": "ng build --stats-json",
+		"analyze": "webpack-bundle-analyzer dist/smartia-logging-ng/stats.json",
 		"serve:ssr:smartia-logging-ng": "node dist/smartia-logging-ng/server/server.mjs",
 		"postinstall": "npm install -g @angular/cli @angular/compiler-cli typescript && npm run build "
 	},
@@ -53,6 +55,7 @@
 		"karma-coverage": "~2.2.0",
 		"karma-jasmine": "~5.1.0",
 		"karma-jasmine-html-reporter": "~2.1.0",
-		"typescript": "~5.2.2"
+		"typescript": "~5.2.2",
+		"webpack-bundle-analyzer": "^4.10.1"
 	}
 }
