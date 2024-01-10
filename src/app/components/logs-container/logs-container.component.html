@@ -7,12 +7,12 @@
 			</time>
 
 			<!-- Elemento de hostname -->
-			<a class="log-line-item log-line-a" [href]="">
+			<a class="log-line-item log-line-a" [href]="getHostnameUrl(log.hostname)">
 				{{ log.hostname }}
 			</a>
 
 			<!-- Elemento de nombre de la aplicación -->
-			<a class="log-line-item log-line-a" [href]="">
+			<a class="log-line-item log-line-a" [href]="getQueryUrl(log.appName)">
 				{{ log.appName }}
 			</a>
 

@@ -16,4 +16,11 @@ import { MessageLog } from "(src)/app/core/mesage-log";
 export class LogsContainerComponent {
 	@Input() logs!: MessageLog[];
 
+	getHostnameUrl(hostname: string): string {
+		return `/?hostname=${encodeURIComponent(hostname)}`;
+	}
+
+	getQueryUrl(query: string) {
+		return `/?query=${encodeURIComponent(query)}`;
+	}
 }
