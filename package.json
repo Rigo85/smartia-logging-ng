@@ -3,15 +3,12 @@
 	"version": "0.0.1",
 	"scripts": {
 		"ng": "ng",
-		"start": "node server.js",
-		"start:ng": "ng serve",
+		"start": "ng serve --host 0.0.0.0",
 		"build": "ng build --configuration production",
 		"watch": "ng build --watch --configuration development",
 		"test": "ng test",
 		"build:stats": "ng build --stats-json",
-		"analyze": "webpack-bundle-analyzer dist/smartia-logging-ng/stats.json",
-		"serve:ssr:smartia-logging-ng": "node dist/smartia-logging-ng/server/server.mjs",
-		"postinstall": "npm run build"
+		"analyze": "webpack-bundle-analyzer dist/smartia-logging-ng/stats.json"
 	},
 	"engines": {
 		"node": "18.x",

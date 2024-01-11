@@ -4,8 +4,8 @@
 		id="hostnames-select"
 		[(ngModel)]="hostnameFilter"
 		(ngModelChange)="onHostnameChangeEvent($event)">
-		@for(item of hostnames; track item) {
-			<option>{{item}}</option>
+		@for (item of hostnames; track item) {
+			<option>{{ item }}</option>
 		}
 	</select>
 	<input
@@ -17,7 +17,7 @@
 	<app-date-filter-popover
 		(newQueryEvent)="onDateFilter($event)">
 	</app-date-filter-popover>
-	<div></div>
+	<div id="expander1"></div>
 	<button
 		class="btn btn-secondary play-pause-btn"
 		(click)="onStartStopEvent()"

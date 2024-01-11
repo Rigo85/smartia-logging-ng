@@ -32,7 +32,7 @@ export class LoggingService {
 	public logFilter: LogFilter = {};
 
 	constructor(private dateRecognition: DateRecognition) {
-		this.webSocket = new WebSocketSubject<IncomingMessage>("ws://smartia-logging-ui-backend");
+		this.webSocket = new WebSocketSubject<IncomingMessage>("wss://smartia-logging-ui-backend.services.smartia-ai.com");
 
 		this.webSocket
 			.pipe(
@@ -45,11 +45,14 @@ export class LoggingService {
 			)
 			.subscribe({
 				next: (msg: IncomingMessage) => {
-					if (msg.event === "hostnames") {
-						// this.incomingHostnames.next(msg);
-					} else {
+					if (msg.event === "update") {
 						this.incomingMessages.next(msg);
 					}
+					// if (msg.event === "hostnames") {
+					// 	// this.incomingHostnames.next(msg);
+					// } else {
+					// 	this.incomingMessages.next(msg);
+					// }
 				},
 				error: err => console.error(err),
 				complete: () => console.log("Closed connection")
