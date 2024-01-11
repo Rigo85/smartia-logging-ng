@@ -1,22 +1,22 @@
 .footer {
+	/* Tus estilos existentes */
 	position: fixed;
 	bottom: 0;
 	width: 100%;
-	display: flex;
 	gap: 10px;
-	align-items: center;
 	z-index: 1000;
 	padding: 10px;
 	background-color: #343a40; /* Fondo oscuro para el footer */
 	color: #f8f9fa; /* Color de texto claro */
-}
 
+	display: grid;
+	grid-template-columns: repeat(3, 1fr); /* Divide el footer en 3 columnas */
+	grid-gap: 10px; /* Espacio entre los elementos del grid */
+	align-items: center;
+}
 .footer .dropdown {
 	max-width: 150px; /* Ancho máximo para los dropdowns */
-}
-
-.footer input {
-	flex-grow: 1;
+	//min-width: 150px;
 }
 
 .play-pause-btn {
@@ -24,6 +24,7 @@
 	justify-content: center;
 	align-items: center;
 	min-width: 40px;
+	max-width: 40px;
 	height: 40px;
 }
 
@@ -43,14 +44,6 @@
 .footer .form-control,
 .footer .btn {
 	height: 40px; /* Altura fija para todos los elementos */
-}
-
-.footer > select {
-	width: 20%;
-}
-
-.footer > div {
-	width: 20%;
 }
 
 #filter-input {
@@ -79,15 +72,62 @@
 	background-color: #333;
 	border-color: #333;
 }
-
+/* Estilos para dispositivos móviles */
 @media only screen and (max-width: 768px) {
+	.footer {
+		grid-template-columns: 150px 1fr auto;
+		grid-template-areas:
+            "select datefilter button"
+            "input input input"; /* Define dos filas */
+	}
+
+	.footer > select {
+		grid-area: select; /* Coloca el select en la primera fila */
+	}
+
+	.footer > app-date-filter-popover {
+		grid-area: datefilter; /* Coloca el date-filter en la primera fila */
+	}
+
+	.footer > .play-pause-btn {
+		grid-area: button; /* Coloca el botón en la primera fila */
+	}
+
+	.footer > #filter-input {
+		grid-area: input; /* Coloca el input en la segunda fila */
+	}
+
 	#expander1 {
 		display: none;
 	}
 }
 
-//@media only screen and (min-width: 769px) {
-//	//#hostnames-select-mobile {
-//	//	display: none;
-//	//}
-//}
+/* Estilos para dispositivos de escritorio */
+@media only screen and (min-width: 769px) {
+	.footer {
+		/* Asegurarse de que hay suficientes columnas para todos los elementos */
+		grid-template-columns: 150px 1fr 0fr 10% auto; /* Una columna para cada elemento */
+		grid-template-areas: "select input datefilter expander button"; /* Todos los elementos en una fila */
+	}
+
+	/* Asegurándose de que cada elemento esté asignado a la zona correcta */
+	.footer > select {
+		grid-area: select;
+	}
+
+	.footer > #filter-input {
+		grid-area: input;
+	}
+
+	.footer > app-date-filter-popover {
+		grid-area: datefilter;
+	}
+
+	.footer > #expander1 {
+		grid-area: expander;
+	}
+
+	.footer > .play-pause-btn {
+		grid-area: button;
+	}
+}
