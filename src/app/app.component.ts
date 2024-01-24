@@ -49,6 +49,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 	private isAtBottom(): boolean {
 		if (this.container) {
 			const element = this.container.nativeElement;
+			// console.info(`scrollTop=${element.scrollTop} clientHeight=${element.clientHeight} scrollHeight=${element.scrollHeight} sum=${element.scrollTop + element.clientHeight + 1}`)
 			return element.scrollTop + element.clientHeight + 1 >= element.scrollHeight;
 		}
 		return false;

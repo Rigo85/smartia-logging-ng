@@ -74,7 +74,6 @@ export class LoggingService {
 	public onFilterLogs(force: boolean = false): void {
 		console.log(`-----------------> onFilterLogs: '${JSON.stringify(this.logFilter)}'`);
 		if (this.isStreaming || force) {
-			// todo enviar un identificador y esperar por la respuesta con el mismo.
 			this.sendMessage({event: "update", data: this.logFilter});
 		}
 	}
