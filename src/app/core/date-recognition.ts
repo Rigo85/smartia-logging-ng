@@ -27,7 +27,8 @@ export class DateRecognition {
 	}
 
 	public dateRecognition(query: string): DateFilter | undefined {
-		const results = Recognizers.recognizeDateTime(query, Recognizers.Culture.English);
+		// const results = Recognizers.recognizeDateTime(query, Recognizers.Culture.English);
+		const results = Recognizers.recognizeDateTime(query, "en-us");
 		// console.info(JSON.stringify(results));
 
 		const mapper: Record<string, DateTimeResolver | DateTimeRangeResolver> = {

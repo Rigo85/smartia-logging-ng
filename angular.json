@@ -18,8 +18,7 @@
 					"builder": "@angular-devkit/build-angular:application",
 					"options": {
 						"allowedCommonJsDependencies": [
-							"@microsoft/recognizers-text-suite",
-							"@microsoft/recognizers-text-number"
+							"@microsoft/recognizers-text-suite"
 						],
 						"outputPath": "dist/smartia-logging-ng",
 						"index": "src/index.html",
