@@ -4,7 +4,6 @@ import { catchError, Observable, retry, Subject, throwError } from "rxjs";
 
 import { LogFilter } from "(src)/app/core/log-filter";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { DateRecognition } from "(src)/app/core/date-recognition";
 
 interface MessageFilter {
 	event: "update" | "update-hostname";
@@ -31,7 +30,7 @@ export class LoggingService {
 
 	public logFilter: LogFilter = {};
 
-	constructor(private dateRecognition: DateRecognition) {
+	constructor() {
 		this.webSocket = new WebSocketSubject<IncomingMessage>("wss://smartia-logging-ui-backend.services.smartia-ai.com");
 
 		this.webSocket
@@ -46,6 +45,7 @@ export class LoggingService {
 			.subscribe({
 				next: (msg: IncomingMessage) => {
 					if (msg.event === "update") {
+						// console.log("------------------> incoming message!");
 						this.incomingMessages.next(msg);
 					}
 					// if (msg.event === "hostnames") {
@@ -64,6 +64,7 @@ export class LoggingService {
 	}
 
 	public set isStreaming(isStreaming: boolean) {
+		// console.log("-------------> " + `${isStreaming}`);
 		this._isStreaming = isStreaming;
 	}
 
@@ -72,7 +73,7 @@ export class LoggingService {
 	}
 
 	public onFilterLogs(force: boolean = false): void {
-		console.log(`-----------------> onFilterLogs: '${JSON.stringify(this.logFilter)}'`);
+		// console.log(`-----------------> onFilterLogs: '${JSON.stringify(this.logFilter)}'`);
 		if (this.isStreaming || force) {
 			this.sendMessage({event: "update", data: this.logFilter});
 		}
@@ -86,7 +87,8 @@ export class LoggingService {
 
 	public onDateQueryFilter(query: string): void {
 		this.logFilter.queryString = query;
-		this.logFilter.dateFilter = this.dateRecognition.dateRecognition(query);
+		this.logFilter.dateFilter = undefined;
+		this.logFilter.offset = -new Date().getTimezoneOffset();
 
 		this.onFilterLogs(true);
 	}

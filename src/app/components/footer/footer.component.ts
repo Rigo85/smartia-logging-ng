@@ -68,6 +68,7 @@ export class FooterComponent implements OnInit {
 	}
 
 	getIcon(): IconDefinition {
+		// console.log(`----------------> start/stop isAtBottom: ${this.isAtBottom}`);
 		if (!this.isAtBottom) return faChevronDown;
 
 		return this.loggingService.isStreaming ? faPause : faPlay;

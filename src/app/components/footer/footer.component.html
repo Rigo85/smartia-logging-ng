@@ -13,7 +13,8 @@
 		[(ngModel)]="inputFilter"
 		(keydown.enter)="onInputFilter()"
 		id="filter-input"
-		type="text"/>
+		type="text"
+		autocomplete="off"/>
 	<app-date-filter-popover
 		(newQueryEvent)="onDateFilter($event)">
 	</app-date-filter-popover>

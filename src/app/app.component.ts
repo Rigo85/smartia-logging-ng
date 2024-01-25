@@ -39,7 +39,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.loggingService.onFilterLogs();
 
 		this.checkScrollInterval = setInterval(() => {
-			if (this.isAtBottom() && !this.loading) {
+			// console.log(`isAtBottom: ${this.isAtBottom()} loading: ${this.loading}`);
+			if (this.loggingService.isStreaming && this.isAtBottom() && !this.loading) {
 				this.loading = true;
 				this.loggingService.onFilterLogs();
 			}
@@ -55,12 +56,15 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 		return false;
 	}
 
-	adjustScroll(needAdjustment: boolean = true): void {
-		setTimeout(() => {
-			const element = this.container.nativeElement;
-			const newHeight = element.scrollHeight;
-			element.scrollTop = newHeight - element.clientHeight;
-		});
+	adjustScroll(needAdjustment: boolean = false): void {
+		// console.log(`-----------------------------> needAdjustment: ${needAdjustment}, bottom: ${this.isAtBottom()}`);
+		if (this.isAtBottom() || needAdjustment) {
+			setTimeout(() => {
+				const element = this.container.nativeElement;
+				const newHeight = element.scrollHeight;
+				element.scrollTop = newHeight - element.clientHeight;
+			});
+		}
 	}
 
 	ngOnDestroy(): void {
@@ -96,6 +100,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	onScroll(event: any): void {
+		// console.log(`----------------------> isAtBottom: ${this.isAtBottom()}`);
 		this.loggingService.isStreaming = this.isAtBottom();
 		this.isBottom = this.isAtBottom();
 	}

@@ -5,6 +5,7 @@ export interface LogFilter {
 	inputFilter?: string;
 	queryString?: string;
 	dateFilter?: DateFilter;
+	offset?: number;
 	direction?: "UP" | "DOWN";
 	startId?: number;
 	endId?: number;
