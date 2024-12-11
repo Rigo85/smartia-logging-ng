@@ -43,7 +43,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit, AfterView
 		this.loggingService.onFilterLogs();
 
 		this.checkScrollInterval = setInterval(() => {
-			// console.log(`isAtBottom: ${this.isAtBottom()} loading: ${this.loading}`);
+			// console.log(`isStreaming: ${this.loggingService.isStreaming} isAtBottom: ${this.isAtBottom()} loading: ${this.loading}`);
 			if (this.loggingService.isStreaming && this.isAtBottom() && !this.loading) {
 				this.loading = true;
 				this.loggingService.onFilterLogs();
@@ -72,9 +72,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit, AfterView
 		// console.log(`-----------------------------> needAdjustment: ${needAdjustment}, bottom: ${this.isAtBottom()}`);
 		if (this.isAtBottom() || needAdjustment) {
 			setTimeout(() => {
-				// const element = this.logsContainer.container.nativeElement;
-				// const newHeight = element.scrollHeight;
-				// element.scrollTop = newHeight - element.clientHeight;
 				const element = this.logsContainer.container.nativeElement;
 				element.scrollTop = element.scrollHeight;
 			});
@@ -118,11 +115,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit, AfterView
 
 		this.loggingService.incomingMessage$
 			.pipe(
-				filter(() => this.loggingService.isStreaming),
-				map(msg => msg.data["logs"] || []),
 				tap(() => {
 					this.loading = false;
-				})
+				}),
+				filter(() => this.loggingService.isStreaming),
+				map(msg => msg.data["logs"] || [])
 			)
 			.subscribe((newLogs: MessageLog[]) => {
 				this.allLogs = [...this.allLogs, ...newLogs];
@@ -140,6 +137,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit, AfterView
 			const element = this.logsContainer.container.nativeElement;
 			this.oldHeight = element.scrollHeight;
 			this.oldersLoading = true;
+			// this.loading = false;
 
 			const oldestLog = this.allLogs[0];
 			this.loggingService.onGetOlderLogs(oldestLog.id);
