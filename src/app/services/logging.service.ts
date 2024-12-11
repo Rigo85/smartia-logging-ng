@@ -6,7 +6,7 @@ import { LogFilter } from "(src)/app/core/log-filter";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 interface MessageFilter {
-	event: "update" | "update-hostname";
+	event: "update" | "update-hostname" | "update-olders";
 	data: LogFilter;
 }
 
@@ -21,8 +21,11 @@ interface IncomingMessage {
 export class LoggingService {
 	private webSocket!: WebSocketSubject<IncomingMessage>;
 
+	private incomingOlderMessages: Subject<IncomingMessage> = new Subject<IncomingMessage>();
 	private incomingMessages: Subject<IncomingMessage> = new Subject<IncomingMessage>();
 	private incomingHostnames: Subject<IncomingMessage> = new Subject<IncomingMessage>();
+
+	public incomingOlderMessages$: Observable<IncomingMessage> = this.incomingOlderMessages.asObservable();
 	public incomingMessage$: Observable<IncomingMessage> = this.incomingMessages.asObservable();
 	public incomingHostnames$: Observable<IncomingMessage> = this.incomingHostnames.asObservable();
 
@@ -48,7 +51,10 @@ export class LoggingService {
 					if (msg.event === "update") {
 						// console.log("------------------> incoming message!");
 						this.incomingMessages.next(msg);
+					} else if (msg.event === "update-olders") {
+						this.incomingOlderMessages.next(msg);
 					}
+
 					// if (msg.event === "hostnames") {
 					// 	// this.incomingHostnames.next(msg);
 					// } else {
@@ -78,6 +84,10 @@ export class LoggingService {
 		if (this.isStreaming || force) {
 			this.sendMessage({event: "update", data: this.logFilter});
 		}
+	}
+
+	public onGetOlderLogs(id: number) {
+		this.sendMessage({event: "update-olders", data: {id}});
 	}
 
 	public onInputFilter(query: string): void {

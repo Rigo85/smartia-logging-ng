@@ -9,4 +9,5 @@ export interface LogFilter {
 	direction?: "UP" | "DOWN";
 	startId?: number;
 	endId?: number;
+	id?: number;
 }

@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { AfterViewChecked, AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { AsyncPipe, CommonModule } from "@angular/common";
 import { ActivatedRoute, Router, RouterOutlet } from "@angular/router";
-import { filter, map, Observable, startWith, tap } from "rxjs";
+import { BehaviorSubject, filter, map, tap } from "rxjs";
 
 import { NavComponent } from "(src)/app/components/nav/nav.component";
 import { FooterComponent } from "(src)/app/components/footer/footer.component";
@@ -14,7 +14,6 @@ import { LoggingService } from "(src)/app/services/logging.service";
 	standalone: true,
 	imports: [
 		CommonModule,
-		RouterOutlet,
 		NavComponent,
 		FooterComponent,
 		LogsContainerComponent,
@@ -23,16 +22,22 @@ import { LoggingService } from "(src)/app/services/logging.service";
 	templateUrl: "./app.component.html",
 	styleUrl: "./app.component.scss"
 })
-export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
+export class AppComponent implements OnInit, OnDestroy, AfterViewInit, AfterViewChecked {
 	private readonly checkScrollInterval: any;
 	@ViewChild(LogsContainerComponent) logsContainer!: LogsContainerComponent;
-	public logs$!: Observable<MessageLog[]>;
+
+	private logsSubject = new BehaviorSubject<MessageLog[]>([]);
+	public logs$ = this.logsSubject.asObservable();
+	private allLogs: MessageLog[] = [];
+	private oldHeight: number = 0;
 	loading = false;
+	oldersLoading = false;
 	isBottom = true;
 	public hostnames: string[] = ["All Hostnames"];
 	public paramHostname: string = "";
 	public paramQuery: string = "";
 	public paramDateQuery: string = "";
+	private needScrollAdjustment: boolean = true;
 
 	constructor(private loggingService: LoggingService, private route: ActivatedRoute, private router: Router) {
 		this.loggingService.onFilterLogs();
@@ -53,6 +58,14 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 			return element.scrollTop + element.clientHeight + 1 >= element.scrollHeight;
 		}
 		return false;
+	}
+
+	ngAfterViewChecked() {
+		if (this.needScrollAdjustment) {
+			this.needScrollAdjustment = false;
+			const element = this.logsContainer.container.nativeElement;
+			element.scrollTop = element.scrollHeight;
+		}
 	}
 
 	adjustScroll(needAdjustment: boolean = false): void {
@@ -83,20 +96,52 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 			this.loggingService.logFilter.queryString = this.paramDateQuery;
 		});
 
-		this.logs$ = this.loggingService.incomingMessage$.pipe(
-			filter(() => this.loggingService.isStreaming),
-			map((msg) => msg.data["logs"] || []),
-			tap((_) => {
-				this.loading = false;
-				this.adjustScroll();
-			}),
-			startWith([])
-		);
+		this.loggingService.incomingOlderMessages$
+			.pipe(
+				map(msg => msg.data["logs"] || []),
+				tap(() => {
+					this.oldersLoading = false;
+				})
+			)
+			.subscribe((olderLogs: MessageLog[]) => {
+				this.allLogs = [...olderLogs, ...this.allLogs];
+				this.logsSubject.next(this.allLogs);
 
-		this.logs$.subscribe((logs: MessageLog[]) => {
-			const _hostnames = new Set(logs.map((log: MessageLog) => log.hostname));
-			this.hostnames = ["All Hostnames", ...Array.from(_hostnames)];
-		});
+				setTimeout(() => {
+					const element = this.logsContainer.container.nativeElement;
+					const newHeight = element.scrollHeight;
+					element.scrollTop = newHeight - this.oldHeight;
+				});
+			});
+
+		this.loggingService.incomingMessage$
+			.pipe(
+				filter(() => this.loggingService.isStreaming),
+				map(msg => msg.data["logs"] || []),
+				tap(() => {
+					this.loading = false;
+				})
+			)
+			.subscribe((newLogs: MessageLog[]) => {
+				this.allLogs = [...this.allLogs, ...newLogs];
+				this.logsSubject.next(this.allLogs);
+
+				const hostnames = new Set(this.allLogs.map((log: MessageLog) => log.hostname));
+				this.hostnames = ["All Hostnames", ...Array.from(hostnames)];
+
+				this.adjustScroll();
+			});
+	}
+
+	loadOlderLogs(): void {
+		if (!this.oldersLoading) {
+			const element = this.logsContainer.container.nativeElement;
+			this.oldHeight = element.scrollHeight;
+			this.oldersLoading = true;
+
+			const oldestLog = this.allLogs[0];
+			this.loggingService.onGetOlderLogs(oldestLog.id);
+		}
 	}
 
 	onScroll(_: any): void {
@@ -104,8 +149,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.loggingService.isStreaming = this.isAtBottom();
 		this.isBottom = this.isAtBottom();
 
-		if(this.logsContainer.container.nativeElement.scrollTop === 0){
-			console.log("...cargar logs anteriores a:");
+		if (this.logsContainer.container.nativeElement.scrollTop === 0 && !this.oldersLoading) {
+			console.log("Cargar logs anteriores...");
+			this.loadOlderLogs();
 		}
 	}
 
