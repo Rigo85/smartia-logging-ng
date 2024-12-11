@@ -31,7 +31,8 @@ export class LoggingService {
 	public logFilter: LogFilter = {};
 
 	constructor() {
-		this.webSocket = new WebSocketSubject<IncomingMessage>("wss://smartia-logging-ui-backend.services.smartia-ai.com");
+		// this.webSocket = new WebSocketSubject<IncomingMessage>("wss://smartia-logging-ui-backend.services.smartia-ai.com");
+		this.webSocket = new WebSocketSubject<IncomingMessage>("ws://localhost:3005");
 
 		this.webSocket
 			.pipe(

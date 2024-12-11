@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { AsyncPipe, CommonModule } from "@angular/common";
 import { ActivatedRoute, Router, RouterOutlet } from "@angular/router";
-import { map, Observable, startWith, tap } from "rxjs";
+import { filter, map, Observable, startWith, tap } from "rxjs";
 
 import { NavComponent } from "(src)/app/components/nav/nav.component";
 import { FooterComponent } from "(src)/app/components/footer/footer.component";
@@ -24,9 +24,8 @@ import { LoggingService } from "(src)/app/services/logging.service";
 	styleUrl: "./app.component.scss"
 })
 export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
-	title = "smartia-logging-ng";
 	private readonly checkScrollInterval: any;
-	@ViewChild("container") container!: ElementRef;
+	@ViewChild(LogsContainerComponent) logsContainer!: LogsContainerComponent;
 	public logs$!: Observable<MessageLog[]>;
 	loading = false;
 	isBottom = true;
@@ -48,8 +47,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	private isAtBottom(): boolean {
-		if (this.container) {
-			const element = this.container.nativeElement;
+		if (this.logsContainer) {
+			const element = this.logsContainer.container.nativeElement;
 			// console.info(`scrollTop=${element.scrollTop} clientHeight=${element.clientHeight} scrollHeight=${element.scrollHeight} sum=${element.scrollTop + element.clientHeight + 1}`)
 			return element.scrollTop + element.clientHeight + 1 >= element.scrollHeight;
 		}
@@ -60,7 +59,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 		// console.log(`-----------------------------> needAdjustment: ${needAdjustment}, bottom: ${this.isAtBottom()}`);
 		if (this.isAtBottom() || needAdjustment) {
 			setTimeout(() => {
-				const element = this.container.nativeElement;
+				const element = this.logsContainer.container.nativeElement;
 				const newHeight = element.scrollHeight;
 				element.scrollTop = newHeight - element.clientHeight;
 			});
@@ -85,8 +84,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 		});
 
 		this.logs$ = this.loggingService.incomingMessage$.pipe(
+			filter(() => this.loggingService.isStreaming),
 			map((msg) => msg.data["logs"] || []),
-			tap((logs) => {
+			tap((_) => {
 				this.loading = false;
 				this.adjustScroll();
 			}),
@@ -99,16 +99,22 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 		});
 	}
 
-	onScroll(event: any): void {
+	onScroll(_: any): void {
 		// console.log(`----------------------> isAtBottom: ${this.isAtBottom()}`);
 		this.loggingService.isStreaming = this.isAtBottom();
 		this.isBottom = this.isAtBottom();
+
+		if(this.logsContainer.container.nativeElement.scrollTop === 0){
+			console.log("...cargar logs anteriores a:");
+		}
 	}
 
 	ngAfterViewInit(): void {
-		this.container.nativeElement.addEventListener("scroll", (event: any) => {
-			this.onScroll(event);
-		});
+		if (this.logsContainer) {
+			this.logsContainer.container.nativeElement.addEventListener("scroll", (event: any) => {
+				this.onScroll(event);
+			});
+		}
 	}
 
 	onNewHostnameEvent(hostname: string) {

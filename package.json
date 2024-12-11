@@ -11,8 +11,7 @@
 		"analyze": "webpack-bundle-analyzer dist/smartia-logging-ng/stats.json"
 	},
 	"engines": {
-		"node": "18.x",
-		"npm": "9.x"
+		"node": "22.x"
 	},
 	"private": true,
 	"dependencies": {

@@ -1,6 +1,6 @@
 import {
-	Component,
-	Input
+	Component, ElementRef,
+	Input, ViewChild
 } from "@angular/core";
 
 import { FormatDatePipe } from "(src)/app/pipes/format-date.pipe";
@@ -15,6 +15,7 @@ import { MessageLog } from "(src)/app/core/mesage-log";
 })
 export class LogsContainerComponent {
 	@Input() logs!: MessageLog[];
+	@ViewChild("container") container!: ElementRef;
 
 	getHostnameUrl(hostname: string): string {
 		return `/?hostname=${encodeURIComponent(hostname)}`;
