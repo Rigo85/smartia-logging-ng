@@ -37,7 +37,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit, AfterView
 	public paramHostname: string = "";
 	public paramQuery: string = "";
 	public paramDateQuery: string = "";
-	private needScrollAdjustment: boolean = true;
+	private needScrollAdjustment: number = 0;
 
 	constructor(private loggingService: LoggingService, private route: ActivatedRoute, private router: Router) {
 		this.loggingService.onFilterLogs();
@@ -61,8 +61,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit, AfterView
 	}
 
 	ngAfterViewChecked() {
-		if (this.needScrollAdjustment) {
-			this.needScrollAdjustment = false;
+		if (this.needScrollAdjustment < 2) {
+			this.needScrollAdjustment += 1;
 			const element = this.logsContainer.container.nativeElement;
 			element.scrollTop = element.scrollHeight;
 		}
@@ -72,9 +72,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit, AfterView
 		// console.log(`-----------------------------> needAdjustment: ${needAdjustment}, bottom: ${this.isAtBottom()}`);
 		if (this.isAtBottom() || needAdjustment) {
 			setTimeout(() => {
+				// const element = this.logsContainer.container.nativeElement;
+				// const newHeight = element.scrollHeight;
+				// element.scrollTop = newHeight - element.clientHeight;
 				const element = this.logsContainer.container.nativeElement;
-				const newHeight = element.scrollHeight;
-				element.scrollTop = newHeight - element.clientHeight;
+				element.scrollTop = element.scrollHeight;
 			});
 		}
 	}
