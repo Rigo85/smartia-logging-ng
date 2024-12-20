@@ -122,7 +122,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit, AfterView
 				map(msg => msg.data["logs"] || [])
 			)
 			.subscribe((newLogs: MessageLog[]) => {
-				this.allLogs = [...this.allLogs, ...newLogs];
+				// this.allLogs = [...this.allLogs, ...newLogs];
+				this.allLogs = newLogs;
 				this.logsSubject.next(this.allLogs);
 
 				const hostnames = new Set(this.allLogs.map((log: MessageLog) => log.hostname));
@@ -140,7 +141,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit, AfterView
 			// this.loading = false;
 
 			const oldestLog = this.allLogs[0];
-			this.loggingService.onGetOlderLogs(oldestLog.id);
+			if (oldestLog) {
+				this.loggingService.onGetOlderLogs(oldestLog.id);
+			}
 		}
 	}
 
