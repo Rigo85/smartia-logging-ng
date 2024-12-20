@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { faPause, faPlay, IconDefinition, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faPause, faPlay, IconDefinition, faChevronDown, faQuestion } from "@fortawesome/free-solid-svg-icons";
 import { NgbPopoverModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { LoggingService } from "(src)/app/services/logging.service";
@@ -33,6 +33,7 @@ export class FooterComponent implements OnInit {
 	@Output() newDateQueryEvent = new EventEmitter<string>;
 	@Input() hostnameFilter: string = "All Hostnames";
 	@Input() hostnames!: string[];
+	faQuestion = faQuestion;
 
 	constructor(public loggingService: LoggingService) { }
 
@@ -65,6 +66,11 @@ export class FooterComponent implements OnInit {
 		}
 
 		this.loggingService.isStreaming = !this.loggingService.isStreaming;
+	}
+
+	onHelpEvent() {
+		const helpUrl = "https://github.com/Rigo85/smartia-logging-ng#gu%C3%ADa-de-b%C3%BAsqueda-estricta";
+		window.open(helpUrl, "_blank");
 	}
 
 	getIcon(): IconDefinition {

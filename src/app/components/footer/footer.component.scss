@@ -13,6 +13,7 @@
 	grid-gap: 10px; /* Espacio entre los elementos del grid */
 	align-items: center;
 }
+
 .footer .dropdown {
 	max-width: 150px; /* Ancho máximo para los dropdowns */
 	//min-width: 150px;
@@ -71,17 +72,36 @@
 	background-color: #333;
 	border-color: #333;
 }
+
+.help-button {
+	height: 40px;
+	background-color: #333;
+	border-color: #333;
+	color: #f8f9fa;
+	border-radius: 2px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-width: 40px;
+	max-width: 40px;
+	cursor: pointer;
+}
+
 /* Estilos para dispositivos móviles */
 @media only screen and (max-width: 768px) {
 	.footer {
-		grid-template-columns: 150px 1fr auto;
+		grid-template-columns: 150px auto 1fr auto;
 		grid-template-areas:
-            "select datefilter button"
-            "input input input"; /* Define dos filas */
+            "select helpbtn datefilter button"
+            "input input input input"; /* Define dos filas */
 	}
 
 	.footer > select {
 		grid-area: select; /* Coloca el select en la primera fila */
+	}
+
+	.footer > #help-btn {
+		grid-area: helpbtn;
 	}
 
 	.footer > app-date-filter-popover {
@@ -105,8 +125,8 @@
 @media only screen and (min-width: 769px) {
 	.footer {
 		/* Asegurarse de que hay suficientes columnas para todos los elementos */
-		grid-template-columns: 150px 1fr 0fr 10% auto; /* Una columna para cada elemento */
-		grid-template-areas: "select input datefilter expander button"; /* Todos los elementos en una fila */
+		grid-template-columns: 150px 1fr auto 0fr 10% auto; /* Una columna para cada elemento */
+		grid-template-areas: "select input helpbtn datefilter expander button"; /* Todos los elementos en una fila */
 	}
 
 	/* Asegurándose de que cada elemento esté asignado a la zona correcta */
@@ -116,6 +136,10 @@
 
 	.footer > #filter-input {
 		grid-area: input;
+	}
+
+	.footer > #help-btn {
+		grid-area: helpbtn;
 	}
 
 	.footer > app-date-filter-popover {

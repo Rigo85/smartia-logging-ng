@@ -15,6 +15,12 @@
 		id="filter-input"
 		type="text"
 		autocomplete="off"/>
+	<button
+		class="btn btn-secondary help-button"
+		(click)="onHelpEvent()"
+		id="help-btn">
+		<fa-icon [icon]="faQuestion"></fa-icon>
+	</button>
 	<app-date-filter-popover
 		(newQueryEvent)="onDateFilter($event)">
 	</app-date-filter-popover>
