@@ -142,6 +142,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit, AfterView
 
 			const oldestLog = this.allLogs[0];
 			if (oldestLog) {
+				console.info(`oldestLog id: ${oldestLog.id}`);
 				this.loggingService.onGetOlderLogs(oldestLog.id);
 			}
 		}
